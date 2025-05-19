@@ -70,12 +70,35 @@ Reviewing the results of the alignment, two proteins were taken out of the datas
 
 Following the same procedure, a second structural alignment was performed on the set of 23 proteins, using the ```pdb_kunitz_ids_23.txt``` file as input file (it was created manually editing the list given the low number of IDs to remove).  
 From the analysis of results of this alignment (saved as ```pdb_kunitz_msa23.fasta```), the decision to remove the protein 4BQD:A was taken because of its higher length (Nres = 78) that led it to produce a large initial gap in the alignment.  
-The third and final alignment was performed on a set of 22 proteins, using ```pdb_kunitz_ids_22.txt``` as input file. Its results are saved in the file ```pdb_kunitz_msa22.fasta```.
+The third and final alignment was performed on a set of 22 proteins, using ```pdb_kunitz_ids_22.txt``` as input file. Its results are saved in the file ```pdb_kunitz_msa22.fasta```.  
+The file downloaded directly from PDBeFold, needs some cleaning, because it has some not-necessary new lines and not all the amino acids are represented as upper case characters:  
+```
+>PDB:1bun:B STRUCTURE OF BETA2-BUNGAROTOXIN: POTASSIUM CHANNEL
+------rkRhpdCD-KPPDT--KICqTVVRAFYYKPSAKRCVQFRYG-GCNgNGNHFKSDHLCRCECley
+r
+>PDB:1dtx:A CRYSTAL STRUCTURE OF ALPHA-DENDROTOXIN FROM THE GR
+------epRrklCI-LHRNP--GRCyDKIPAFYYNQKKKQCERFDWSgCGG-NSNRFKTIEECRRTCig-
+-
+>PDB:1f5r:I RAT TRYPSINOGEN MUTANT COMPLEXED WITH BOVINE PANCR
+--------RpdfCL-EPPYT--GPCkARIIRYFYNAKAGLCQTFVYGgCRA-KRNNFKSAEDCMRTCgg-
+-
+```
+To build the HMM profile, the alignment file needs to edited to look like this:
+```
+>1BUN:B
+------rkRhpdCD-KPPDT--KICqTVVRAFYYKPSAKRCVQFRYG-GCNgNGNHFKSDHLCRCECleyr
+>1DTX:A
+------epRrklCI-LHRNP--GRCyDKIPAFYYNQKKKQCERFDWSgCGG-NSNRFKTIEECRRTCig--
+>1F5R:I
+--------RpdfCL-EPPYT--GPCkARIIRYFYNAKAGLCQTFVYGgCRA-KRNNFKSAEDCMRTCgg--
+```
+# WRITE COMMANDS TO EDIT FILE
+The cleaned alignment file (```pdb_kunitz_msa22.ali```) can now be used to build the HMM.
 
 It is possible to review the files describing the results of the three alignments in this GitHub folder. You can find them in the ```msa_results``` directory.
 
 ---
-## Build the HMM with HMMER
+## HMM Profile Construction based on Structural Alignment 
 Use hmmbuild to generate an HMM profile from the alignment:
 
 ``` bash
@@ -83,15 +106,31 @@ hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
 ```
 ---
 ## Collecting sequences from UniProtKB to test the model performance 
-1. Collect **all human proteins containing a kunitz domain** from the UniProtKB database (N = 18) and download the fasta file (e.g. ```kunitz_human.fasta```). Filters are:
-    1. Human (*Taxonomy [OC]* = 9606)
+1. Collect **all proteins containing a kunitz domain** from the UniProtKB database (N = 18) and download the fasta file (e.g. ```kunitz_all.fasta```). Filters are:
     2. *PFAM id* = PF00014
     3. SwissProt reviewed
 2. Collect all **not-human proteins containing a kunitz domain** from the UniProtKB (N = 380) and download the fasta file (e.g ```kunitz_not_human.fasta```). Filters are:
     1. Not human (NOT *Taxonomy [OC]* 9606)
     2. *PFAM id* = PF00014
     3. SwissProt reviewed
-3. Collect all **not-kunitz proteins** (~) and download the fasta file (e.g. ```not_kunitz.fasta```). Filters are:
-    1. Not PFAM id PF00014)
+3. Merge the two Kunitz dataset files to form a unified collection of positive examples to test the HMM with (```kunitz_all.fasta```):
+   ```bash
+   cat kunitz_human.fasta kunitz_not_human.fasta > kunitz_all.fasta
+   ```
+5. Remove all sequences with a sequence identity ≥ 95% and a Nres ≥ 50 mapping the aligned sequences set on the positive dataset using the ```blastp``` command:
+   ```bash
+   # create a blast database with the kunitz proteins from UniProtKB/SwissProt
+   makeblastdb -in kunitz_all.fasta -input_type fasta -dbtype prot -out kunitz_all.fasta
+   # run a blastp search on the aligned sequences:
+   blastp -query pdb_kunitz_msa22_clean.ali -db kunitz_all.fasta -out kunitz_pdb22.blast -outfmt 7
+   # filter highly similar hits:
+   grep -v "^#" kunitz_pdb22.blast | awk '{if ($3>=95 && $4>=50) print $2}' | sort -u > high_match_22.txt
+   # create a file with the ids to remove:
+   cut -d'|' -f2 high_match_22.txt > to_remove.txt
+   # extract the unmatched ids for the proteins that will form the positive database:
+   comm -23 <(sort kunitz_all.txt) <(sort to_remove.txt) > kunitz_final.txt 
+   ```
+6.  Collect all **SwissProt reviewed not-kunitz proteins** (573.230) and download the fasta file (e.g. ```uniprot_sprot.fasta```). Filters are:
+    1. Not PFAM id PF00014
     2. SwissProt
 ---
