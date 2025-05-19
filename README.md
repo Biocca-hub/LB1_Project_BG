@@ -105,7 +105,7 @@ Use hmmbuild to generate an HMM profile from the alignment:
 hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
 ```
 ---
-## Collecting sequences from UniProtKB to test the model performance 
+## Compilation of Validation Datasets
 1. Collect **all proteins containing a kunitz domain** from the UniProtKB database (N = 18) and download the fasta file (e.g. ```kunitz_all.fasta```). Filters are:
     2. *PFAM id* = PF00014
     3. SwissProt reviewed
@@ -133,4 +133,5 @@ hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
 6.  Collect all **SwissProt reviewed not-kunitz proteins** (573.230) and download the fasta file (e.g. ```uniprot_sprot.fasta```). Filters are:
     1. Not PFAM id PF00014
     2. SwissProt
+
 ---
