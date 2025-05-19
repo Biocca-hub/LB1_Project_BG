@@ -121,12 +121,20 @@ hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
    ```bash
    # create a blast database with the kunitz proteins from UniProtKB/SwissProt
    makeblastdb -in kunitz_all.fasta -input_type fasta -dbtype prot -out kunitz_all.fasta
+   ```
+   ```bash
    # run a blastp search on the aligned sequences:
    blastp -query pdb_kunitz_msa22_clean.ali -db kunitz_all.fasta -out kunitz_pdb22.blast -outfmt 7
+   ```
+   ```bash
    # filter highly similar hits:
    grep -v "^#" kunitz_pdb22.blast | awk '{if ($3>=95 && $4>=50) print $2}' | sort -u > high_match_22.txt
+   ```
+   ```bash
    # create a file with the ids to remove:
    cut -d'|' -f2 high_match_22.txt > to_remove.txt
+   ```
+   ```bash
    # extract the unmatched ids for the proteins that will form the positive database:
    comm -23 <(sort kunitz_all.txt) <(sort to_remove.txt) > kunitz_final.txt 
    ```
