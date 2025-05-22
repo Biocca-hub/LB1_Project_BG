@@ -1,14 +1,13 @@
 # HMM-Based Modeling of Kunitz Domains
 
-This repository outlines the workflow necessary to generate and evaluate a Hidden Markov Model (HMM) based on multiple structural alignment of Kunitz domain-containing proteins. For this scope, the proteins were selected from the Protein Data Bank (PDB) database based on the availability of:
-• high-resolution structural data 
-• annotation in the reviewed SwissProt database. 
+This repository outlines the workflow necessary to generate and evaluate a Hidden Markov Model (HMM) based on multiple structural alignment of Kunitz domain-containing proteins. For this scope, the proteins were selected from the Protein Data Bank (PDB) database based on the availability of:  
+• high-resolution structural data   
+• annotation in the reviewed SwissProt database.   
 The aim of this work is to build a structure-informed HMM that captures conserved features of the Kunitz domain.
 
 ---
 
 ## Project Workflow
-The workflow includes:
 - Structural Data Acquisition and Preprocessing
 - Multiple structural alignment
 - HMM Profile Construction 
@@ -106,40 +105,58 @@ hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
 ```
 ---
 ## Compilation of Validation Datasets
-1. Collect **all proteins containing a kunitz domain** from the UniProtKB database (N = 18) and download the fasta file (e.g. ```kunitz_all.fasta```). Filters are:
-    2. *PFAM id* = PF00014
-    3. SwissProt reviewed
+### Collection of protein IDs to create the positive and the negative datasets:
+
+  
+1. Collect **all human proteins containing a kunitz domain** from the UniProtKB database (N = 18) and download the fasta file (e.g. ```kunitz_all.fasta```). Filters are:
+    2. Human (*Taxonomy [OC]* = 9606)
+    3. *PFAM id* = PF00014
+    4. SwissProt reviewed
+  
 2. Collect all **not-human proteins containing a kunitz domain** from the UniProtKB (N = 380) and download the fasta file (e.g ```kunitz_not_human.fasta```). Filters are:
-    1. Not human (NOT *Taxonomy [OC]* 9606)
+    1. Not human (NOT *Taxonomy [OC]* = 9606)
     2. *PFAM id* = PF00014
     3. SwissProt reviewed
+  
 3. Merge the two Kunitz dataset files to form a unified collection of positive examples to test the HMM with (```kunitz_all.fasta```):
    ```bash
    cat kunitz_human.fasta kunitz_not_human.fasta > kunitz_all.fasta
    ```
-5. Remove all sequences with a sequence identity ≥ 95% and a Nres ≥ 50 mapping the aligned sequences set on the positive dataset using the ```blastp``` command:
+  
+4. Remove all sequences with a sequence identity ≥ 95% and a Nres ≥ 50 mapping the aligned sequences set on the positive dataset:  
+   4.1 Create a blast database with the kunitz proteins from UniProtKB/SwissProt
    ```bash
-   # create a blast database with the kunitz proteins from UniProtKB/SwissProt
    makeblastdb -in kunitz_all.fasta -input_type fasta -dbtype prot -out kunitz_all.fasta
    ```
+   4.2 Run a blastp search on the aligned sequences:
    ```bash
-   # run a blastp search on the aligned sequences:
    blastp -query pdb_kunitz_msa22_clean.ali -db kunitz_all.fasta -out kunitz_pdb22.blast -outfmt 7
    ```
+   4.3 Filter highly similar hits:
    ```bash
-   # filter highly similar hits:
    grep -v "^#" kunitz_pdb22.blast | awk '{if ($3>=95 && $4>=50) print $2}' | sort -u > high_match_22.txt
    ```
+   4.4 Create a file with the ids to remove:
    ```bash
-   # create a file with the ids to remove:
    cut -d'|' -f2 high_match_22.txt > to_remove.txt
    ```
+   4.5 Extract the unmatched ids for the proteins that will form the positive database:
    ```bash
-   # extract the unmatched ids for the proteins that will form the positive database:
    comm -23 <(sort kunitz_all.txt) <(sort to_remove.txt) > kunitz_final.txt 
    ```
-6.  Collect all **SwissProt reviewed not-kunitz proteins** (573.230) and download the fasta file (e.g. ```uniprot_sprot.fasta```). Filters are:
+  
+5.  Collect all **SwissProt reviewed not-kunitz proteins** (573.230) and download the fasta file (e.g. ```uniprot_sprot.fasta```). Filters are:
     1. Not PFAM id PF00014
     2. SwissProt
+      
+    5.1 Create a list of the IDs of the whole UniProtKB/SwissProt:
+    ```bash
+    grep ">" uniprot_sprot.fasta | cut -d "|" -f2 > uniprot_sprot.txt
+    ```
+    5.2 Remove the positive IDs from the list of the negatives:
+    ```bash
+    comm -23 <(sort uniprot_sprot.txt) <(sort kunitz_final.txt) > negatives.txt
+    ```
+
 
 ---
