@@ -157,6 +157,36 @@ hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
     ```bash
     comm -23 <(sort uniprot_sprot.txt) <(sort kunitz_final.txt) > negatives.txt
     ```
+### Creation of randomized positive and negative datasets:
+1. Random sorting of the ID files:
+   ```bash
+   sort -R kunitz_final.txt > kunitz_final_random.txt
+   sort -R negatives.txt > negatives_random.txt
+   ```
+2. Divide the randomized sets in halves:  
+   Positives:  
+   ```bash
+   head -n 183 kunitz_final_random.txt > pos_1.txt
+   tail -n 182 kunitz_final_random.txt > pos_2.txt
+   ```
+   Negatives:
+   ```bash
+   head -n 286416 negatives_random.txt > neg_1.txt
+   tail -n 286416 negatives_random.txt > neg_2.txt
+   ```
+3. Generate FASTA files of the randomized and divided datasets:
+   Positives:  
+   ```bash
+   python3 get_seq.py pos_1.txt uniprot_sprot.fasta > pos_1.fasta
+   python3 get_seq.py pos_2.txt uniprot_sprot.fasta > pos_2.fasta
+   ```
+   Negatves:
+   ```bash
+   python3 get_seq.py neg_1.txt uniprot_sprot.fasta > neg_1.fasta
+   python3 get_seq.py neg_2.txt uniprot_sprot.fasta > neg_2.fasta
+   ```
 
+
+   
 
 ---
