@@ -186,3 +186,34 @@ hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
    python3 get_seq.py neg_2.txt uniprot_sprot.fasta > neg_2.fasta
    ```
 ---
+## HMM Scanning and Hit Mapping
+```bash
+hmmsearch -Z 1000 --max --tblout pos_1.out pdb_kunitz_22.hmm pos_1.fasta
+hmmsearch -Z 1000 --max --tblout pos_2.out pdb_kunitz_22.hmm pos_2.fasta
+```
+```bash
+grep -v "^#" pos_1.out |awk '{split($1,a,"\|"); print a[2],1,$5,$8}' |tr " " "\t" >pos_1.class
+grep -v "^#" pos_2.out |awk '{split($1,a,"\|"); print a[2],1,$5,$8}' |tr " " "\t" >pos_2.class
+```
+```bash
+hmmsearch -Z 1000 --max --tblout neg_1.out pdb_kunitz_22.hmm neg_1.fasta
+hmmsearch -Z 1000 --max --tblout neg_2.out pdb_kunitz_22.hmm neg_2.fasta
+```
+```bash
+grep -v "^#" neg_1.out |awk '{split($1,a,"\|"); print a[2],0,$5,$8}' |tr " " "\t" >neg_1.class
+grep -v "^#" neg_2.out |awk '{split($1,a,"\|"); print a[2],0,$5,$8}' |tr " " "\t" >neg_2.class
+```
+```bash
+comm -23 <(sort neg_1.txt) <(cut -f 1 neg_1.class | sort) | awk '{print $1"\t0\t10.0\t10.0"}' >> neg_1.class
+comm -23 <(sort neg_2.txt) <(cut -f 1 neg_2.class | sort) | awk '{print $1"\t0\t10.0\t10.0"}' >> neg_2.class
+```
+```bash
+cat pos_1.class neg_1.class >set_1.class
+cat pos_2.class neg_2.class >set_2.class
+```
+---
+## Performance Assessment
+```bash
+for i in `seq 1 12`; do python3 ../Desktop/Capriotti/performance.py set_2.class 1e-$i; done
+for i in `seq 1 12`; do python3 ../Desktop/Capriotti/performance.py set_1.class 1e-$i; done
+```
