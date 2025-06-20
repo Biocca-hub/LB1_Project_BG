@@ -35,7 +35,7 @@ A custom report (```1_Advanced_Search_tabular_report_BG.csv```) was generated fr
 #### Clustering:
 A fasta file (```pdb_kunitz.fasta```) containing the PDB IDs and the sequences of the proteins in the collected dataset (N = 160) was generated from the report file running the following command:
 ```bash
-tr -d '"' < rcsb_pdb_custom_report_20250511052702.csv | awk -F ',' '{if (length($2)>0) {name=$2}; print name,$6,$8,$9}' | grep PF00014 | awk '{print ">"$1"_"$3; print $2}' > pdb_kunitz.fasta
+tr -d '"' < 1_Advanced_Search_tabular_report_BG.csv | awk -F ',' '{if (length($2)>0) {name=$2}; print name,$6,$8,$9}' | grep PF00014 | awk '{print ">"$1"_"$3; print $2}' > pdb_kunitz.fasta
 ```
 Using Cd-hit - a tool for clustering and filtering sequences based on sequence identity - with the standard threshold (sequence identity = 90%) allowed the identification of the set of proteins (N = 25) on which to perform the multiple structural alignment while avoiding redundancy. The clustering was performed running the following command: 
 ```bash
