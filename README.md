@@ -22,7 +22,7 @@ A set of proteins (N = 160) characterized by the presence of a Kunitz domain and
 • Data collection resolution ≤ 3.5 Å;    
 • PFAM identifier = PF00014);  
 • 45 ≤ Polymer Entity Sequence Length ≤ 80.   
-A custom report (```rcsb_pdb_custom_report_20250511052702.csv```) was generated from the output of the Advanced Search, with the intent to store informations about:  
+A custom report (```1_Advanced_Search_tabular_report_BG.csv```) was generated from the output of the Advanced Search, with the intent to store informations about:  
 • PDB ID;  
 • Total Number of Non-polymer Instances;  
 • Refinement Resolu-tion (Å);  
