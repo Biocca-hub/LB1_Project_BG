@@ -50,7 +50,7 @@ That’s why the ```clstr2txt``` command was applied to convert it into a tabula
 clstr2txt.pl pdb_kunitz_cluster.txt.clstr > clusters_table.txt
 ```
 ## Multiple Structural Alingment
-The multiple sequence alignment was performed through PDBeFold. To do so, a file listing the PDB identifiers and corresponding chain information for the 25 selected proteins (```pdb_kunitz_ids.txt```) was generated running this command:
+The multiple structural alignment was performed through PDBeFold. To do so, a file listing the PDB identifiers and corresponding chain information for the 25 selected proteins (```pdb_kunitz_ids.txt```) was generated running this command:
 ```bash
 grep '^>' pdb_kunitz_cluster.txt | sed 's/^>//' | sed 's/_/:/'  > pdb_kunitz_ids_25.txt
 ```
@@ -108,10 +108,10 @@ hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
 ### Collection of protein IDs to create the positive and the negative datasets:
 
   
-1. Collect **all human proteins containing a kunitz domain** from the UniProtKB database (N = 18) and download the fasta file (e.g. ```kunitz_all.fasta```). Filters are:
-    2. Human (*Taxonomy [OC]* = 9606)
-    3. *PFAM id* = PF00014
-    4. SwissProt reviewed
+1. Collect **all human proteins containing a kunitz domain** from the UniProtKB database (N = 18) and download the fasta file (e.g. ```kunitz_all.fasta```). Filters are:  
+    1. Human (*Taxonomy [OC]* = 9606)
+    2. *PFAM id* = PF00014
+    3. SwissProt reviewed
   
 2. Collect all **not-human proteins containing a kunitz domain** from the UniProtKB (N = 380) and download the fasta file (e.g ```kunitz_not_human.fasta```). Filters are:
     1. Not human (NOT *Taxonomy [OC]* = 9606)
