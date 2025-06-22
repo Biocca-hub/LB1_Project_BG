@@ -187,6 +187,7 @@ hmmbuild pdb_kunitz.hmm pdb_kunitz_msa22_clean.ali
    ```
 ---
 ## HMM Scanning and Hit Mapping
+Using hmmsearch, the structural alignment-derived Kunitz profile HMM (```pdb_kunitz_22.hmm```) was tested against a curated set of known Kunitz sequences (```pos_1.fasta```, ```pos_2.fasta```). The ```--max``` flag ensured maximum sensitivity by bypassing heuristic filters, and ```-Z 1000``` calibrated E-values as if the search were conducted against a larger protein database.
 ```bash
 hmmsearch -Z 1000 --max --tblout pos_1.out pdb_kunitz_22.hmm pos_1.fasta
 hmmsearch -Z 1000 --max --tblout pos_2.out pdb_kunitz_22.hmm pos_2.fasta
@@ -195,6 +196,7 @@ hmmsearch -Z 1000 --max --tblout pos_2.out pdb_kunitz_22.hmm pos_2.fasta
 grep -v "^#" pos_1.out |awk '{split($1,a,"\|"); print a[2],1,$5,$8}' |tr " " "\t" >pos_1.class
 grep -v "^#" pos_2.out |awk '{split($1,a,"\|"); print a[2],1,$5,$8}' |tr " " "\t" >pos_2.class
 ```
+Then, the structural alignment-derived Kunitz profile HMM (```pdb_kunitz_22.hmm```) was tested against a curated set of known not-Kunitz sequences (```neg_1.fasta```, ```neg_2.fasta```). The ```--max``` flag ensures maximum sensitivity by bypassing heuristic filters, and ```-Z 1000``` calibrates E-values as if the search were conducted against a larger protein database.
 ```bash
 hmmsearch -Z 1000 --max --tblout neg_1.out pdb_kunitz_22.hmm neg_1.fasta
 hmmsearch -Z 1000 --max --tblout neg_2.out pdb_kunitz_22.hmm neg_2.fasta
