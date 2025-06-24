@@ -11,7 +11,7 @@ ggplot(data, aes(x = E.Value, y = MCC, color = factor(Set), group = Set)) +
        color = "Set") +
   theme_minimal() +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),  # Center and format title
-    legend.position = c(0.85, 0.2),  # Bottom right (x=85%, y=20%)
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"), 
+    legend.position = c(0.85, 0.2), 
     legend.background = element_rect(fill = "white", color = "gray", size = 0.3)
   )
