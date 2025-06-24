@@ -3,7 +3,9 @@
 This repository outlines the workflow necessary to generate and evaluate a Hidden Markov Model (HMM) based on multiple structural alignment of Kunitz domain-containing proteins. For this scope, the proteins were selected from the Protein Data Bank (PDB) database based on the availability of:  
 • high-resolution structural data   
 • annotation in the reviewed SwissProt database.   
-The aim of this work is to build a structure-informed HMM that captures conserved features of the Kunitz domain.
+The aim of this work is to build a structure-informed HMM that captures conserved features of the Kunitz domain.  
+
+For each section of the workflow, a dedicated folder containing related files is present.   
 
 ---
 
