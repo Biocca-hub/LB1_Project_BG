@@ -87,13 +87,12 @@ r
 To build the HMM profile, the alignment file needs to edited to look like this:
 ```
 >1BUN:B
-------rkRhpdCD-KPPDT--KICqTVVRAFYYKPSAKRCVQFRYG-GCNgNGNHFKSDHLCRCECleyr
+------RKRHPDCD-KPPDT--KICQTVVRAFYYKPSAKRCVQFRYG-GCNGNGNHFKSDHLCRCECLEYR
 >1DTX:A
-------epRrklCI-LHRNP--GRCyDKIPAFYYNQKKKQCERFDWSgCGG-NSNRFKTIEECRRTCig--
+------EPRKLCI-LHRNP--GRCYDKIPAFYYNQKKKQCERFDWSGCGG-NSNRFKTIEECRRTCIG--
 >1F5R:I
---------RpdfCL-EPPYT--GPCkARIIRYFYNAKAGLCQTFVYGgCRA-KRNNFKSAEDCMRTCgg--
+--------RPDFCL-EPPYT--GPCKARIIRYFYNAKAGLCQTFVYGGCRA-KRNNFKSAEDCMRTCGG--
 ```
-# WRITE COMMANDS TO EDIT FILE
 The cleaned alignment file (```pdb_kunitz_msa22.ali```) can now be used to build the HMM.
 
 It is possible to review the files describing the results of the three alignments in this GitHub folder. You can find them in the ```msa_results``` directory.
