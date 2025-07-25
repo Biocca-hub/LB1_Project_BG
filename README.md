@@ -27,12 +27,12 @@ A set of proteins (N = 160) characterized by the presence of a Kunitz domain and
 A custom report (```1_Advanced_Search_tabular_report_BG.csv```) was generated from the output of the Advanced Search, with the intent to store informations about:  
 • PDB ID;  
 • Total Number of Non-polymer Instances;  
-• Refinement Resolu-tion (Å);  
+• Refinement Resolution (Å);  
 • Data Collection Resolution;  
 • Sequence;  
 • Polymer Entity Sequence Length;  
 • Auth Asym ID (the chain identifier);  
-• Annotation Identi-fier (PFAM and GO);  
+• Annotation Identifier (PFAM and GO);  
 • Entity ID.  
 #### Clustering:
 A fasta file (```pdb_kunitz.fasta```) containing the PDB IDs and the sequences of the proteins in the collected dataset (N = 160) was generated from the report file running the following command:
